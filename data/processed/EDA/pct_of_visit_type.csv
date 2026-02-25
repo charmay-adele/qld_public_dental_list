@@ -1,0 +1,129 @@
+quarter_start,visit_type,total_waiting,pct_of_total_waiting
+2020-01-01,Clinical Assessment,101,0.07
+2020-01-01,General,127635,87.59
+2020-01-01,General Anaesthetic Category 1,26,0.02
+2020-01-01,General Anaesthetic Category 2,445,0.31
+2020-01-01,General Anaesthetic Category 3,1812,1.24
+2020-01-01,Priority 1,571,0.39
+2020-01-01,Priority 2,4540,3.12
+2020-01-01,Priority 3,10583,7.26
+2020-07-01,Clinical Assessment,179,0.12
+2020-07-01,General,133820,86.91
+2020-07-01,General Anaesthetic Category 1,14,0.01
+2020-07-01,General Anaesthetic Category 2,526,0.34
+2020-07-01,General Anaesthetic Category 3,1807,1.17
+2020-07-01,Priority 1,518,0.34
+2020-07-01,Priority 2,5348,3.47
+2020-07-01,Priority 3,11767,7.64
+2020-10-01,Clinical Assessment,126,0.08
+2020-10-01,General,131578,86.47
+2020-10-01,General Anaesthetic Category 1,12,0.01
+2020-10-01,General Anaesthetic Category 2,518,0.34
+2020-10-01,General Anaesthetic Category 3,1888,1.24
+2020-10-01,Priority 1,718,0.47
+2020-10-01,Priority 2,5511,3.62
+2020-10-01,Priority 3,11814,7.76
+2021-01-01,Clinical Assessment,119,0.08
+2021-01-01,General,134204,87.35
+2021-01-01,General Anaesthetic Category 1,28,0.02
+2021-01-01,General Anaesthetic Category 2,590,0.38
+2021-01-01,General Anaesthetic Category 3,1787,1.16
+2021-01-01,Priority 1,679,0.44
+2021-01-01,Priority 2,5014,3.26
+2021-01-01,Priority 3,11221,7.30
+2021-04-01,Clinical Assessment,174,0.11
+2021-04-01,General,134592,87.18
+2021-04-01,General Anaesthetic Category 1,28,0.02
+2021-04-01,General Anaesthetic Category 2,622,0.40
+2021-04-01,General Anaesthetic Category 3,1771,1.15
+2021-04-01,Priority 1,615,0.40
+2021-04-01,Priority 2,5439,3.52
+2021-04-01,Priority 3,11136,7.21
+2022-07-01,Clinical Assessment,426,0.31
+2022-07-01,General,125026,89.81
+2022-07-01,General Anaesthetic Category 1,43,0.03
+2022-07-01,General Anaesthetic Category 2,820,0.59
+2022-07-01,General Anaesthetic Category 3,2054,1.48
+2022-07-01,Priority 1,163,0.12
+2022-07-01,Priority 2,2734,1.96
+2022-07-01,Priority 3,7943,5.71
+2022-10-01,Clinical Assessment,250,0.18
+2022-10-01,General,122152,89.94
+2022-10-01,General Anaesthetic Category 1,43,0.03
+2022-10-01,General Anaesthetic Category 2,851,0.63
+2022-10-01,General Anaesthetic Category 3,2087,1.54
+2022-10-01,Priority 1,170,0.13
+2022-10-01,Priority 2,2967,2.18
+2022-10-01,Priority 3,7288,5.37
+2023-04-01,Clinical Assessment,165,0.13
+2023-04-01,General,116080,88.65
+2023-04-01,General Anaesthetic Category 1,27,0.02
+2023-04-01,General Anaesthetic Category 2,928,0.71
+2023-04-01,General Anaesthetic Category 3,2031,1.55
+2023-04-01,Priority 1,252,0.19
+2023-04-01,Priority 2,4165,3.18
+2023-04-01,Priority 3,7294,5.57
+2023-07-01,Clinical Assessment,135,0.10
+2023-07-01,General,119700,89.11
+2023-07-01,General Anaesthetic Category 1,26,0.02
+2023-07-01,General Anaesthetic Category 2,988,0.74
+2023-07-01,General Anaesthetic Category 3,2060,1.53
+2023-07-01,Priority 1,266,0.20
+2023-07-01,Priority 2,3625,2.70
+2023-07-01,Priority 3,7522,5.60
+2023-10-01,Clinical Assessment,126,0.09
+2023-10-01,General,125064,88.19
+2023-10-01,General Anaesthetic Category 1,31,0.02
+2023-10-01,General Anaesthetic Category 2,1019,0.72
+2023-10-01,General Anaesthetic Category 3,2051,1.45
+2023-10-01,Priority 1,233,0.16
+2023-10-01,Priority 2,4859,3.43
+2023-10-01,Priority 3,8435,5.95
+2024-01-01,Clinical Assessment,144,0.10
+2024-01-01,General,126987,88.20
+2024-01-01,General Anaesthetic Category 1,17,0.01
+2024-01-01,General Anaesthetic Category 2,1063,0.74
+2024-01-01,General Anaesthetic Category 3,2042,1.42
+2024-01-01,Priority 1,183,0.13
+2024-01-01,Priority 2,4017,2.79
+2024-01-01,Priority 3,9519,6.61
+2024-04-01,Clinical Assessment,143,0.10
+2024-04-01,General,130940,87.84
+2024-04-01,General Anaesthetic Category 1,25,0.02
+2024-04-01,General Anaesthetic Category 2,1100,0.74
+2024-04-01,General Anaesthetic Category 3,2090,1.40
+2024-04-01,Priority 1,285,0.19
+2024-04-01,Priority 2,5508,3.69
+2024-04-01,Priority 3,8983,6.03
+2024-07-01,Clinical Assessment,175,0.12
+2024-07-01,General,131624,88.07
+2024-07-01,General Anaesthetic Category 1,22,0.01
+2024-07-01,General Anaesthetic Category 2,1033,0.69
+2024-07-01,General Anaesthetic Category 3,2108,1.41
+2024-07-01,Priority 1,263,0.18
+2024-07-01,Priority 2,4856,3.25
+2024-07-01,Priority 3,9376,6.27
+2024-10-01,Clinical Assessment,175,0.11
+2024-10-01,General,136236,88.13
+2024-10-01,General Anaesthetic Category 1,41,0.03
+2024-10-01,General Anaesthetic Category 2,1044,0.68
+2024-10-01,General Anaesthetic Category 3,2162,1.40
+2024-10-01,Priority 1,255,0.16
+2024-10-01,Priority 2,5377,3.48
+2024-10-01,Priority 3,9302,6.02
+2025-01-01,Clinical Assessment,199,0.13
+2025-01-01,General,140165,88.87
+2025-01-01,General Anaesthetic Category 1,26,0.02
+2025-01-01,General Anaesthetic Category 2,963,0.61
+2025-01-01,General Anaesthetic Category 3,2137,1.35
+2025-01-01,Priority 1,199,0.13
+2025-01-01,Priority 2,4750,3.01
+2025-01-01,Priority 3,9278,5.88
+2025-04-01,Clinical Assessment,183,0.11
+2025-04-01,General,147712,88.93
+2025-04-01,General Anaesthetic Category 1,24,0.01
+2025-04-01,General Anaesthetic Category 2,897,0.54
+2025-04-01,General Anaesthetic Category 3,2146,1.29
+2025-04-01,Priority 1,261,0.16
+2025-04-01,Priority 2,5880,3.54
+2025-04-01,Priority 3,9001,5.42

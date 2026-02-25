@@ -1,0 +1,7 @@
+Schema
+-- clinic                 | **clinic_id**, *clinic_name*, catchment }
+-- appointment            | { **visit_id**, visit_type, schedule }
+-- wait_period            | { **period_id**, period_name, period_tier, period_description, start_month, end_month, is_desired }
+-- appointment_waitperiod | { **visit_id**, **period_id** } |
+-- queue                  | { **log_id**, date, **period_id**, **clinic_id**, patients_waiting, patients_treated }
+
