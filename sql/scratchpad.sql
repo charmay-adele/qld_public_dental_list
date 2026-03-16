@@ -259,5 +259,32 @@ SELECT c.clinic_name, a.visit_type, wp.period_name, wp.period_description,
 
 */
 
-SELECT *
-FROM queue;
+
+
+
+/* chopping block */
+
+-- How do clinics rank across catchements in meeting desired wait times and treatment targets?  
+    /*
+    Top Clinics by Catchment - Total Waiting vs Treated (Desired Wait Times)
+    */
+    catchment	       | clinic_name	               | total_waiting	| total_treated/*
+    Metro North	         STAFFORD DENTAL CLINIC	         72489	          20402
+    Metro North	         ORAL HEALTH CENTRE	             182264	          19551
+    Metro South	         BEENLEIGH BEAUDESERT CLUS	     298667	          14358
+    Mackay	             MACKAY DENTAL CLINIC	         147961	          12970
+    Wide Bay	         HERVEY BAY DENTAL CLINIC	     109018	          11453
+    Central Queensland	 ROCKHAMPTON DENTAL CLINIC	     122211	          11297
+    */
+    SQL Query:
+    --------------------------------------------------------------------------------------------------
+
+  SELECT clinic.catchment, clinic.clinic_name,
+         SUM(queue.patients_waiting) AS total_waiting,
+         SUM(queue.patients_treated) AS total_treated
+    FROM queue
+    JOIN clinic ON clinic.clinic_id = queue.clinic_id
+    JOIN wait_period ON wait_period.period_id = queue.period_id
+    WHERE wait_period.is_desired = True
+    GROUP BY clinic.catchment, clinic.clinic_name
+    ORDER BY total_treated DESC;

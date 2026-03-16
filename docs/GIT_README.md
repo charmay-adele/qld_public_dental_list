@@ -5,6 +5,7 @@ git status
 git checkout main
 
 # what kind of change? name the branch
+   *git switch -c feature/load_data
     git checkout -b feature/load_data
     eg. feature/fix/experiment
 
@@ -12,7 +13,7 @@ git checkout main
 git add . |all| 
     git add sql/ |folder| 
     git add sql/load_data.sql |file|
-    
+
 git commit -m "Describe changes"
 
 # Pull remote changes before pushing
@@ -20,3 +21,8 @@ git pull origin main --rebase
 
 # Push local commits
 git push -u origin main
+
+-u upstream
+-m message
+-b add & go to branch
+-c create

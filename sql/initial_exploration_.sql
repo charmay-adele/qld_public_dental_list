@@ -122,17 +122,18 @@ DROP TABLE IF EXISTS quarterly_format;
     CREATE TEMPORARY TABLE quarterly_format AS
         WITH dates_waiting AS (
                 SELECT
-                    date, SUM(patients_waiting) AS patients_waiting, appointment.visit_type AS visit_type
+                    date, SUM(patients_waiting) AS patients_waiting, SUM(patients_treated) AS patients_treated, appointment.visit_type AS visit_type
                     FROM queue
                     JOIN appointment ON appointment.visit_id = queue.visit_id
                     GROUP BY date, appointment.visit_type
             )
-            -- collapse to quarters, averaging sum of waiuting per date. 
+            -- collapse to quarters, averaging sum of waiting per date. 
                 /*   months of quarters are averaged to maintain data integrity   */   
         SELECT 
             DATE_TRUNC('quarter', date)::date AS quarter_start, 
             visit_type,
-            ROUND(AVG(patients_waiting), 0) AS total_waiting
+            ROUND(AVG(patients_waiting), 0) AS total_waiting,
+            ROUND(AVG(patients_treated), 0) AS total_treated
         FROM dates_waiting
         GROUP BY quarter_start, visit_type;
 
@@ -160,6 +161,7 @@ SELECT * FROM quarterly_format ORDER BY quarter_start, visit_type;
             FROM queue
             GROUP BY date
             ORDER BY date;
+-- 
 
     -- Grouped by Recommended Wait Time Period Tiers
         date       | period_tier | is_desired | period_description | total_waiting | total_treated/*
@@ -654,31 +656,6 @@ SELECT * FROM quarterly_format ORDER BY quarter_start, visit_type;
     GROUP BY date, clinic_name, visit_type
     ORDER BY date, clinic_name, visit_type;
 
--- How do clinics rank across catchements in meeting desired wait times and treatment targets?  
-    /*
-    Top Clinics by Catchment - Total Waiting vs Treated (Desired Wait Times)
-    */
-    catchment	       | clinic_name	               | total_waiting	| total_treated/*
-    Metro North	         STAFFORD DENTAL CLINIC	         72489	          20402
-    Metro North	         ORAL HEALTH CENTRE	             182264	          19551
-    Metro South	         BEENLEIGH BEAUDESERT CLUS	     298667	          14358
-    Mackay	             MACKAY DENTAL CLINIC	         147961	          12970
-    Wide Bay	         HERVEY BAY DENTAL CLINIC	     109018	          11453
-    Central Queensland	 ROCKHAMPTON DENTAL CLINIC	     122211	          11297
-    */
-    SQL Query:
-    --------------------------------------------------------------------------------------------------
-
-  SELECT clinic.catchment, clinic.clinic_name,
-         SUM(queue.patients_waiting) AS total_waiting,
-         SUM(queue.patients_treated) AS total_treated
-    FROM queue
-    JOIN clinic ON clinic.clinic_id = queue.clinic_id
-    JOIN wait_period ON wait_period.period_id = queue.period_id
-    WHERE wait_period.is_desired = True
-    GROUP BY clinic.catchment, clinic.clinic_name
-    ORDER BY total_treated DESC;
-
 -- Given appointment type, what percentage of patients are treated within the recommended timeframe? 
     visit_type	                    | pct_treated_within_recommended_timeframe/*
     General	                         86.72%
@@ -696,7 +673,7 @@ SELECT * FROM quarterly_format ORDER BY quarter_start, visit_type;
     SELECT appointment.visit_type,
          CONCAT(ROUND(100.0 * SUM(CASE WHEN wait_period.is_desired = True THEN queue.patients_treated ELSE 0 END) /
          NULLIF(SUM(queue.patients_treated), 0), 2), '%') AS pct_treated_within_recommended_timeframe
-         --proportions of visit types treated
+         -- proportions of visit types treated
          -- pct_of_total_treated_across_all_types shows the percentage of all treated patients accounted for by each visit type
          -- Proportion of treated patients per visit type out of total treated across all types
     FROM queue
