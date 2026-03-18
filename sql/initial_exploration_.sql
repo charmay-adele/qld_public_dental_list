@@ -155,12 +155,22 @@ SELECT * FROM quarterly_format ORDER BY quarter_start, visit_type;
 
         SQL Query:
         --------------------------------------------------------------------------------------------------------
+            EXPLAIN ANALYZE
             SELECT date,
                 SUM(patients_waiting) AS total_waiting,
                 SUM(patients_treated) AS total_treated
             FROM queue
             GROUP BY date
             ORDER BY date;
+
+            ---
+            -- CREATE INDEX idx_date ON queue(date);
+            -- EXPLAIN ANALYZE < prior to query, to examine execution
+            
+            --- List all indexes on the queue table
+            -- SELECT indexname, indexdef
+            -- FROM pg_indexes
+            -- WHERE tablename = 'queue';
 -- 
 
     -- Grouped by Recommended Wait Time Period Tiers
