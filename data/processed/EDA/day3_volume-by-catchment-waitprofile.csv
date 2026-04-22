@@ -1,0 +1,76 @@
+wait_time_profile,catchment,avg_waittime_profile,avg_waittime_profile_pct,avg_catchment_waitlist,avg_pct_of_waitlist
+D1,Cairns and Hinterland,6691,68.86,9716,7.46
+D2,Cairns and Hinterland,2899,29.83,9716,7.46
+D3,Cairns and Hinterland,126,1.30,9716,7.46
+D4,Cairns and Hinterland,0,0.00,9716,7.46
+D5,Cairns and Hinterland,0,0.00,9716,7.46
+D1,Central Queensland,6033,74.35,8114,6.23
+D2,Central Queensland,2081,25.65,8114,6.23
+D3,Central Queensland,0,0.00,8114,6.23
+D4,Central Queensland,0,0.00,8114,6.23
+D5,Central Queensland,0,0.00,8114,6.23
+D1,Central West,588,67.63,869,0.67
+D2,Central West,276,31.77,869,0.67
+D3,Central West,5,0.55,869,0.67
+D4,Central West,0,0.05,869,0.67
+D5,Central West,0,0.00,869,0.67
+D1,Darling Downs,6442,68.05,9466,7.27
+D2,Darling Downs,2988,31.57,9466,7.27
+D3,Darling Downs,36,0.38,9466,7.27
+D4,Darling Downs,0,0.00,9466,7.27
+D5,Darling Downs,0,0.00,9466,7.27
+D1,Gold Coast,6570,73.07,8991,6.90
+D2,Gold Coast,2412,26.83,8991,6.90
+D3,Gold Coast,9,0.10,8991,6.90
+D4,Gold Coast,0,0.00,8991,6.90
+D5,Gold Coast,0,0.00,8991,6.90
+D1,Mackay,4930,73.78,6682,5.13
+D2,Mackay,1751,26.21,6682,5.13
+D3,Mackay,0,0.01,6682,5.13
+D4,Mackay,0,0.00,6682,5.13
+D5,Mackay,0,0.00,6682,5.13
+D1,Metro North,13374,76.86,17400,13.36
+D2,Metro North,4026,23.14,17400,13.36
+D3,Metro North,0,0.00,17400,13.36
+D4,Metro North,0,0.00,17400,13.36
+D5,Metro North,0,0.00,17400,13.36
+D1,Metro South,19627,61.11,32120,24.67
+D2,Metro South,12477,38.84,32120,24.67
+D3,Metro South,16,0.05,32120,24.67
+D4,Metro South,0,0.00,32120,24.67
+D5,Metro South,0,0.00,32120,24.67
+D1,North West,489,68.42,715,0.55
+D2,North West,177,24.76,715,0.55
+D3,North West,37,5.12,715,0.55
+D4,North West,10,1.41,715,0.55
+D5,North West,2,0.30,715,0.55
+D1,South West,1049,95.78,1095,0.84
+D2,South West,46,4.22,1095,0.84
+D3,South West,0,0.00,1095,0.84
+D4,South West,0,0.00,1095,0.84
+D5,South West,0,0.00,1095,0.84
+D1,Sunshine Coast,6793,57.07,11903,9.14
+D2,Sunshine Coast,5099,42.84,11903,9.14
+D3,Sunshine Coast,10,0.09,11903,9.14
+D4,Sunshine Coast,0,0.00,11903,9.14
+D5,Sunshine Coast,0,0.00,11903,9.14
+D1,Torres and Cape,362,41.88,864,0.66
+D2,Torres and Cape,334,38.63,864,0.66
+D3,Torres and Cape,121,14.04,864,0.66
+D4,Torres and Cape,33,3.81,864,0.66
+D5,Torres and Cape,14,1.63,864,0.66
+D1,Townsville,2341,77.61,3017,2.32
+D2,Townsville,675,22.39,3017,2.32
+D3,Townsville,0,0.00,3017,2.32
+D4,Townsville,0,0.00,3017,2.32
+D5,Townsville,0,0.00,3017,2.32
+D1,West Moreton,4386,48.94,8963,6.88
+D2,West Moreton,4113,45.89,8963,6.88
+D3,West Moreton,464,5.18,8963,6.88
+D4,West Moreton,0,0.00,8963,6.88
+D5,West Moreton,0,0.00,8963,6.88
+D1,Wide Bay,6513,63.19,10307,7.91
+D2,Wide Bay,3793,36.81,10307,7.91
+D3,Wide Bay,0,0.00,10307,7.91
+D4,Wide Bay,0,0.00,10307,7.91
+D5,Wide Bay,0,0.00,10307,7.91

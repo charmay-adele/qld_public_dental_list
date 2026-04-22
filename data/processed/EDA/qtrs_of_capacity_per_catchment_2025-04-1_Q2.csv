@@ -1,0 +1,16 @@
+quarter_start,catchment_total_waiting,catchment_total_treated,catchment,avg_capacity_ratio,avg_capacity_pct,avg_n_qtr_to_100pct,avg_total_months
+2025-04-01,10058,878,Cairns and Hinterland,0.087,8.73,11,33
+2025-04-01,8532,1173,Central Queensland,0.137,13.75,7,21
+2025-04-01,1157,103,Central West,0.089,8.90,11,33
+2025-04-01,10662,633,Darling Downs,0.059,5.94,17,51
+2025-04-01,9652,1429,Gold Coast,0.148,14.81,7,21
+2025-04-01,6771,622,Mackay,0.092,9.19,11,33
+2025-04-01,22727,2084,Metro North,0.092,9.17,11,33
+2025-04-01,36577,1454,Metro South,0.040,3.98,25,75
+2025-04-01,610,57,North West,0.093,9.34,11,33
+2025-04-01,1275,257,South West,0.202,20.16,5,15
+2025-04-01,12104,786,Sunshine Coast,0.065,6.49,15,45
+2025-04-01,726,156,Torres and Cape,0.215,21.49,5,15
+2025-04-01,3712,305,Townsville,0.082,8.22,12,36
+2025-04-01,11456,456,West Moreton,0.040,3.98,25,75
+2025-04-01,11693,1082,Wide Bay,0.093,9.25,11,33

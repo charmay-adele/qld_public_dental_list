@@ -117,30 +117,131 @@
 -- Dataset has been collected via seperate methods and will need reformatting to be used for time series analysis.
 -- Monthly and Quarterly records are transformed to level quarterly intervals maintaining data integrity.
 
-DROP TABLE IF EXISTS quarterly_format;
 
-    CREATE TEMPORARY TABLE quarterly_format AS
-        WITH dates_waiting AS (
-                SELECT
-                    date, SUM(patients_waiting) AS patients_waiting, SUM(patients_treated) AS patients_treated, appointment.visit_type AS visit_type
-                    FROM queue
-                    JOIN appointment ON appointment.visit_id = queue.visit_id
-                    GROUP BY date, appointment.visit_type
-            )
-            -- collapse to quarters, averaging sum of waiting per date. 
-                /*   months of quarters are averaged to maintain data integrity   */   
-        SELECT 
-            DATE_TRUNC('quarter', date)::date AS quarter_start, 
-            visit_type,
-            ROUND(AVG(patients_waiting), 0) AS total_waiting,
-            ROUND(AVG(patients_treated), 0) AS total_treated
-        FROM dates_waiting
-        GROUP BY quarter_start, visit_type;
+    DROP TABLE IF EXISTS quarterly_format;
+
+        CREATE TEMPORARY TABLE quarterly_format AS
+            WITH total_volume AS (
+                    SELECT
+                        date, 
+                        SUM(patients_waiting) AS patients_waiting, 
+                        SUM(patients_treated) AS patients_treated, 
+                        appointment.visit_type AS visit_type,
+                        clinic.clinic_id,
+                        clinic_name,
+                        catchment
+                        FROM queue
+                        JOIN appointment ON appointment.visit_id = queue.visit_id
+                        JOIN clinic ON clinic.clinic_id = queue.clinic_id
+                        GROUP BY date, appointment.visit_type, clinic.clinic_id, clinic_name, catchment
+                )
+                -- collapse to quarters, averaging sum of waiting per date. 
+                    /*   months of quarters are averaged to maintain data integrity   */   
+            SELECT 
+                DATE_TRUNC('quarter', date)::date AS quarter_start, 
+                visit_type,
+                ROUND(AVG(patients_waiting), 0) AS total_waiting,
+                ROUND(SUM(patients_treated), 0) AS total_treated,
+                clinic_id,
+                clinic_name,
+                catchment
+            FROM total_volume
+            GROUP BY quarter_start, visit_type, clinic_id, clinic_name, catchment;
 
 SELECT * FROM quarterly_format ORDER BY quarter_start, visit_type;
 
+-- average proportion of visit_types
 
-        
+    WITH quarterly_visit_total AS ( -- waitlist of each visit_type + quarter
+        SELECT
+        quarter_start AS quarter,
+        SUM(total_waiting) AS total_waitlist,
+        visit_type
+    FROM quarterly_format
+    GROUP BY quarter_start, visit_type
+    )
+    SELECT -- average of those quarters
+    visit_type,
+    ROUND(AVG(qvt.total_waitlist),0) AS avg_visit_list,
+    ROUND(
+        AVG(qvt.total_waitlist)*100 -- partial figure
+            /SUM(AVG(qvt.total_waitlist))OVER(), -- define total figure
+            2) AS pct_of_list
+    FROM quarterly_visit_total qvt
+    GROUP BY visit_type;
+
+-- Average catchment capacity per quarter
+    WITH clinic_totals AS (
+        SELECT 
+            quarter_start,
+            SUM(total_waiting) AS clinic_waiting_total,
+            SUM(total_treated) AS clinic_treated_total,
+            clinic_id,
+            clinic_name,
+            catchment
+    FROM quarterly_format
+        WHERE visit_type = 'General'
+        GROUP BY quarter_start, clinic_id, clinic_name, catchment
+    )
+
+    SELECT
+    quarter_start,
+    SUM(clinic_waiting_total) AS Catchment_total_waiting,
+    SUM(clinic_treated_total) AS Catchment_total_treated,
+    catchment,
+        ROUND(SUM(clinic_treated_total)/NULLIF(SUM(clinic_waiting_total),0), 3) AS avg_capacity_ratio,
+        ROUND((SUM(clinic_treated_total)/NULLIF(SUM(clinic_waiting_total),0))*100, 2) AS avg_capacity_pct,
+        ROUND(1 / NULLIF((SUM(clinic_treated_total) / NULLIF(SUM(clinic_waiting_total),0)), 0),0) AS avg_n_qtr_to_100pct,
+        3 * ROUND(1/NULLIF((SUM(clinic_treated_total) / NULLIF(SUM(clinic_waiting_total),0)),0),0) AS avg_total_months
+    FROM clinic_totals
+    GROUP BY quarter_start, catchment;
+
+-- Count of Clinics per Catchment
+    SELECT COUNT(DISTINCT clinic_name), catchment
+    FROM quarterly_format
+    GROUP BY catchment;
+
+-- Total waiting list per catchment each quarter
+    SELECT
+        quarter_start AS quarter,
+        SUM(total_waiting) AS total_waitlist,
+        catchment
+    FROM quarterly_format
+    WHERE visit_type = 'General'
+    GROUP BY quarter_start, catchment;
+
+-- Clinics per Catchment
+    WITH clinic_totals AS (
+        SELECT 
+            quarter_start,
+            SUM(total_waiting) AS clinic_waiting_total,
+            SUM(total_treated) AS clinic_treated_total,
+            clinic_id,
+            clinic_name,
+            catchment
+    FROM quarterly_format
+        WHERE visit_type = 'General'
+        GROUP BY quarter_start, clinic_id, clinic_name, catchment
+    )
+
+    SELECT
+    quarter_start,
+    ct.clinic_id,
+    ct.clinic_name,
+    clinic_waiting_total,
+    clinic_treated_total,
+    SUM(clinic_waiting_total)OVER(PARTITION BY catchment, quarter_start ORDER BY quarter_start) AS catchment_total,
+    catchment,
+    ROUND(clinic_treated_total/NULLIF(clinic_waiting_total,0), 3) AS capacity_ratio,
+    ROUND((clinic_treated_total/NULLIF(clinic_waiting_total,0))*100, 2) AS capacity_pct,
+    ROUND(1 / NULLIF((clinic_treated_total / NULLIF(clinic_waiting_total,0)), 0),0) AS n_qtr_to_100pct,
+    3 * ROUND(1/NULLIF((clinic_treated_total / NULLIF(clinic_waiting_total,0)),0),0) AS total_months
+    FROM clinic_totals ct
+    ORDER BY clinic_waiting_total ASC;
+
+
+
+
 
 -- How have waiting list volumes changed over time? Are there seasonal or cyclical patterns occuring - is that tied to recommended wait times?
 
@@ -160,9 +261,7 @@ SELECT * FROM quarterly_format ORDER BY quarter_start, visit_type;
                 SUM(patients_waiting) AS total_waiting,
                 SUM(patients_treated) AS total_treated
             FROM queue
-            GROUP BY date
-            ORDER BY date;
-
+            GROUP BY date            ORDER BY date;
             ---
             -- CREATE INDEX idx_date ON queue(date);
             -- EXPLAIN ANALYZE < prior to query, to examine execution
@@ -171,7 +270,6 @@ SELECT * FROM quarterly_format ORDER BY quarter_start, visit_type;
             -- SELECT indexname, indexdef
             -- FROM pg_indexes
             -- WHERE tablename = 'queue';
--- 
 
     -- Grouped by Recommended Wait Time Period Tiers
         date       | period_tier | is_desired | period_description | total_waiting | total_treated/*
@@ -469,24 +567,36 @@ SELECT * FROM quarterly_format ORDER BY quarter_start, visit_type;
 /* Clinic & Catchment Comparison */   
 --------------------------------------------------------------------------------------------------
 
+SELECT COUNT(DISTINCT catchment)
+FROM clinic
+
 -- Which Catchments capture the most patients?
+    Catchment               avg_list  avg_general_list
+    Metro South	            33694	  32120
+    Metro North	            23514	  17400
+    Sunshine Coast	        13563	  11903
+    Wide Bay	            11295	  10307
+    Cairns and Hinterland	11179	   9716
 
-    catchment	           | waiting	| treated   /*
-    Metro South	             1005416	  62822
-    Metro North	             703905	      66908
-    Sunshine Coast	         406656	      25612
-    Cairns and Hinterland	 342250	      21413
-    Wide Bay	             328303	      34053
-    Gold Coast	             309558	      17240
-    */
     SQL Query:
-    --------------------------------------------------------------------------------------------------
-    SELECT catchment, SUM(patients_waiting) AS waiting, SUM(patients_treated) AS treated
-    FROM queue
-    JOIN clinic ON queue.clinic_id = clinic.clinic_id
+    --------------------------------------------------------------------------------------------------  
+    WITH quarterly_catchement_total AS ( -- sum of each catchemnt each quarter
+        SELECT
+        quarter_start AS quarter,
+        SUM(total_waiting) AS total_waitlist,
+        SUM(CASE WHEN visit_type = 'General' THEN total_waiting ELSE 0 END) AS general_waitlist,
+        catchment
+    FROM quarterly_format
+    GROUP BY quarter_start, catchment
+    )
+    SELECT 
+    catchment,
+    ROUND(AVG(total_waitlist),0) AS avg_waitlist,
+    ROUND(AVG(general_waitlist),0) AS avg_general_waitlist
+    FROM quarterly_catchement_total
     GROUP BY catchment
-    ORDER BY waiting DESC;
-
+    ORDER BY avg_general_waitlist DESC;
+:: below need quarterly_format update::
 -- Which specific Catchments have the largest patient base (at a given time) and are visits seasonal?  
     catchment	        quarter	year	total_waiting	total_treated
     Metro South	        1	    2020	68292	        1861
@@ -555,117 +665,7 @@ SELECT * FROM quarterly_format ORDER BY quarter_start, visit_type;
             FROM clinic_qtr_treated
             GROUP BY clinic_name
             ORDER BY avg_treated_per_clinic_qtr DESC;
-
--- Clinics with the most backlog relative to their output?
-    /*
-    Each quarter a clinic's output is made up of treated patients from a range of appointment types.
-    Each Clinic has a proportion of treated patients per appointment type they serviced, 
-    and each appointment type has patients waiting with different measures of wait-time severity.
-
-    How do we find the size of backlog relative to treatment of patients?
     
-    The proportion of patients waiting for each type of service at a clinic, and the degree they are 
-    waiting for appointments will determine the severity of the backlog. The degree to which a clinic 
-    has patients waiting for an appointment (backlog) is weighted by an appointment type's desired wait 
-    time as a benchmark.
-
-    For Example: 
-    Clinic A has 15 are general patients waiting, 5 priority 1 patients waiting.
-    General has a desired wait time of 24 months, priority 1 has a desired wait time of 1 month.
-    10/15 general patients are on time, 1/5 priority 1 patient is waiting desired time.
-    5 general patients have a wait time of 48 months, 4 priority 1 patients have a wait time of 3 months.
-    */
-    /*
-    To design this metric capturing the weighted severity of backlog per clinic+quarter+appointment type.
-    - A field with the average of each desired wait is created per appointment.
-    - Excess wait time is determined by patients  for each patient waiting, as the difference between their wait 
-        time and the average desired wait time for that appointment type, relative to the average desired 
-        wait time. This gives us a proportional measure of how much longer than the desired wait time patients are waiting.   
-
-        -- startmonth + endmonth / 2 = avg_desired_wait
-    Weight = max(0, VisitWeight - DesiredWeight/DesiredWeight) = max(0,)
-    */
-    -- CTE Max Desired Wait Time
-    WITH desired AS ( 
-        SELECT
-            a.visit_type,
-            MAX(CASE WHEN wp.is_desired THEN wp.end_month END) AS desired_wait
-        FROM appointment AS a
-        JOIN appointment_waitperiod aw ON a.visit_id = aw.visit_id
-        JOIN wait_period wp ON aw.period_id = wp.period_id
-        GROUP BY a.visit_type
-    ),
-    -- CTE Average Desired Wait Time
-    avg_desired AS (
-        SELECT
-            a.visit_type,
-            AVG((wp.start_month + wp.end_month) /2.0) AS avg_desired_wait
-        FROM appointment AS a
-        JOIN appointment_waitperiod aw ON a.visit_id = aw.visit_id
-        JOIN wait_period wp ON aw.period_id = wp.period_id
-        WHERE wp.is_desired = TRUE
-        GROUP BY a.visit_type
-    ),
-    -- Query to amount proportional weight of backlog severity
-    excess_metric AS (
-        SELECT 
-            a.visit_type, 
-            wp.period_id, 
-            wp.period_description, 
-            ROUND(ad.avg_desired_wait,0) AS avg_desired_wait, 
-            wp.is_desired,
-            CASE WHEN wp.is_desired = TRUE THEN 0
-                ELSE ROUND(GREATEST(
-                    0,
-                    ((wp.start_month + wp.end_month) / 2.0 - ad.avg_desired_wait)
-                    / d.desired_wait
-                ),
-                2
-            )
-            END AS excess_wait -- comment here to clarify
-                -- The excess wait expresses how long a patient waits beyond the desired wait, 
-                -- relative to the target desired wait, capped at zero.
-        FROM appointment AS a
-        JOIN desired AS d ON a.visit_type = d.visit_type
-        JOIN avg_desired AS ad ON a.visit_type = ad.visit_type
-        JOIN appointment_waitperiod aw ON a.visit_id = aw.visit_id
-        JOIN wait_period wp ON wp.period_id = aw.period_id
-        GROUP BY 
-        a.visit_type, 
-        wp.period_id, 
-        wp.period_description, 
-        ad.avg_desired_wait,
-        wp.is_desired, 
-        wp.start_month, 
-        wp.end_month, 
-        d.desired_wait
-    ), -- grain: visit_type x snapshot of time x clinic
-    weighted_waittime AS ( 
-        SELECT 
-            c.clinic_name,
-            a.visit_type,
-            wp.period_name, 
-            wp.period_id,
-            dim.date AS date, 
-            q.patients_waiting,
-            em.excess_wait,
-            em.excess_wait * q.patients_waiting AS weighted_excess_wait
-        FROM queue q
-        JOIN dim_date dim ON q.date = dim.date
-        LEFT JOIN clinic c ON c.clinic_id = q.clinic_id
-        LEFT JOIN appointment a ON a.visit_id = q.visit_id
-        LEFT JOIN appointment_waitperiod aw ON a.visit_id = aw.visit_id
-        LEFT JOIN wait_period wp ON wp.period_id = aw.period_id
-        LEFT JOIN excess_metric em ON em.visit_type = a.visit_type AND em.period_id = wp.period_id
-    )
-    -- Final Query: aggregates backlog activity by clinic+quarter+appointment type. 0 severity means no backlog.
-    SELECT
-        date, clinic_name, visit_type, 
-        SUM(weighted_excess_wait) AS backlog_severity
-    FROM weighted_waittime
-    GROUP BY date, clinic_name, visit_type
-    ORDER BY date, clinic_name, visit_type;
-
 -- Given appointment type, what percentage of patients are treated within the recommended timeframe? 
     visit_type	                    | pct_treated_within_recommended_timeframe/*
     General	                         86.72%

@@ -8,7 +8,7 @@
 
 
 -- -- To Review -- --
--- Search for dirty data, ensure entries are accurate, consistent and complete.
+-- Search for messy data, ensure entries are accurate, consistent and complete.
 -- Get a look at the general landscape, explore defining features of the dataset
 
 -- The original master csv has ~14,000 rows
