@@ -53,4 +53,3 @@ df = pd.concat([pd.read_csv(f) for f in data_path.glob("*.csv")], ignore_index=T
 
 # Save combined dataframe to a new CSV
 df.to_csv("F:/Git/projects/waiting_list/data/processed/master_dataset.csv", index=False)
-

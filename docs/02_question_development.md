@@ -20,7 +20,7 @@ Findings can inform potential adjustments to resource allocation, clinic activit
 
   
 The big question:
-## How effectively are Queensland public dental clinics managing patient demand across services and catchments?
+## How effectively are Queensland public dental catchments managing general type patient demand?
 
 ### Supporting Questions 
 
