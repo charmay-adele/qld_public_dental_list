@@ -1,0 +1,136 @@
+quarter,catchment,months_to_treat,patients_cleared_in_24mo,patients_beyond_24mo,long_waiting_patients,exit_results,exit_interpretation
+2023-04-01,Cairns and Hinterland,19,10720,-2233,1,-2234,within target
+2023-04-01,Central Queensland,18,11157,-2789,0,-2789,within target
+2023-04-01,Central West,23,932,-39,0,-39,within target
+2023-04-01,Darling Downs,26,8592,716,0,716,exits likely
+2023-04-01,Gold Coast,26,9100,758,0,758,exits likely
+2023-04-01,Mackay,19,8307,-1731,0,-1731,within target
+2023-04-01,Metro North,8,37887,-25258,0,-25258,within target
+2023-04-01,Metro South,19,33445,-6968,0,-6968,within target
+2023-04-01,North West,71,240,469,125,344,exits likely
+2023-04-01,South West,7,2863,-2028,0,-2028,within target
+2023-04-01,Sunshine Coast,75,4112,8738,0,8738,exits likely
+2023-04-01,Torres and Cape,22,1025,-85,188,-273,within target
+2023-04-01,Townsville,29,2464,513,0,513,exits likely
+2023-04-01,West Moreton,57,3064,4212,0,4212,exits likely
+2023-04-01,Wide Bay,45,5818,5091,0,5091,exits likely
+2023-07-01,Cairns and Hinterland,21,9529,-1191,0,-1191,within target
+2023-07-01,Central Queensland,17,11425,-3332,0,-3332,within target
+2023-07-01,Central West,28,553,92,0,92,exits likely
+2023-07-01,Darling Downs,26,8487,707,0,707,exits likely
+2023-07-01,Gold Coast,17,12261,-3576,0,-3576,within target
+2023-07-01,Mackay,17,9072,-2646,0,-2646,within target
+2023-07-01,Metro North,23,13984,-583,0,-583,within target
+2023-07-01,Metro South,31,23216,6771,0,6771,exits likely
+2023-07-01,North West,59,279,408,113,295,exits likely
+2023-07-01,South West,8,2394,-1596,0,-1596,within target
+2023-07-01,Sunshine Coast,23,11968,-499,0,-499,within target
+2023-07-01,Torres and Cape,20,1244,-207,239,-446,within target
+2023-07-01,Townsville,28,2679,447,0,447,exits likely
+2023-07-01,West Moreton,36,4789,2394,0,2394,exits likely
+2023-07-01,Wide Bay,33,7732,2899,0,2899,exits likely
+2023-10-01,Cairns and Hinterland,31,6725,1961,0,1961,exits likely
+2023-10-01,Central Queensland,25,8061,336,0,336,exits likely
+2023-10-01,Central West,28,885,147,0,147,exits likely
+2023-10-01,Darling Downs,33,7044,2641,0,2641,exits likely
+2023-10-01,Gold Coast,25,8158,340,0,340,exits likely
+2023-10-01,Mackay,48,3594,3593,7,3586,exits likely
+2023-10-01,Metro North,27,12936,1617,0,1617,exits likely
+2023-10-01,Metro South,43,16660,13190,0,13190,exits likely
+2023-10-01,North West,111,152,550,83,467,exits likely
+2023-10-01,South West,11,2055,-1113,0,-1113,within target
+2023-10-01,Sunshine Coast,27,10489,1311,1,1310,exits likely
+2023-10-01,Torres and Cape,29,872,182,228,-46,retention — patients trapped
+2023-10-01,Townsville,18,4109,-1027,0,-1027,within target
+2023-10-01,West Moreton,500,406,8055,622,7433,exits likely
+2023-10-01,Wide Bay,38,7033,4102,0,4102,exits likely
+2024-01-01,Cairns and Hinterland,19,10785,-2247,0,-2247,within target
+2024-01-01,Central Queensland,18,11092,-2773,0,-2773,within target
+2024-01-01,Central West,70,358,687,1,686,exits likely
+2024-01-01,Darling Downs,25,8905,371,0,371,exits likely
+2024-01-01,Gold Coast,27,7932,992,0,992,exits likely
+2024-01-01,Mackay,19,8687,-1810,0,-1810,within target
+2024-01-01,Metro North,24,14865,0,0,0,within target
+2024-01-01,Metro South,33,23472,8802,0,8802,exits likely
+2024-01-01,North West,27,520,65,52,13,exits likely
+2024-01-01,South West,11,2267,-1228,0,-1228,within target
+2024-01-01,Sunshine Coast,35,8111,3717,0,3717,exits likely
+2024-01-01,Torres and Cape,18,1388,-347,233,-580,within target
+2024-01-01,Townsville,28,2759,460,0,460,exits likely
+2024-01-01,West Moreton,48,3992,3992,3,3989,exits likely
+2024-01-01,Wide Bay,26,10314,860,0,860,exits likely
+2024-04-01,Cairns and Hinterland,23,8994,-375,0,-375,within target
+2024-04-01,Central Queensland,16,12255,-4085,0,-4085,within target
+2024-04-01,Central West,25,945,39,1,38,exits likely
+2024-04-01,Darling Downs,42,5775,4331,0,4331,exits likely
+2024-04-01,Gold Coast,32,6833,2278,0,2278,exits likely
+2024-04-01,Mackay,21,7952,-994,0,-994,within target
+2024-04-01,Metro North,18,21541,-5385,0,-5385,within target
+2024-04-01,Metro South,36,20498,10249,0,10249,exits likely
+2024-04-01,North West,24,554,0,3,-3,within target
+2024-04-01,South West,12,2116,-1058,0,-1058,within target
+2024-04-01,Sunshine Coast,73,4264,8707,2,8705,exits likely
+2024-04-01,Torres and Cape,23,1123,-47,303,-350,within target
+2024-04-01,Townsville,29,2818,587,0,587,exits likely
+2024-04-01,West Moreton,107,2136,7388,841,6547,exits likely
+2024-04-01,Wide Bay,36,7667,3834,0,3834,exits likely
+2024-07-01,Cairns and Hinterland,19,10797,-2249,1,-2250,within target
+2024-07-01,Central Queensland,15,12752,-4782,0,-4782,within target
+2024-07-01,Central West,24,1020,0,2,-2,within target
+2024-07-01,Darling Downs,33,7411,2779,0,2779,exits likely
+2024-07-01,Gold Coast,28,8208,1368,0,1368,exits likely
+2024-07-01,Mackay,7,21552,-15266,0,-15266,within target
+2024-07-01,Metro North,27,15935,1992,0,1992,exits likely
+2024-07-01,Metro South,29,26542,5530,0,5530,exits likely
+2024-07-01,North West,6,1552,-1164,0,-1164,within target
+2024-07-01,South West,9,2923,-1827,0,-1827,within target
+2024-07-01,Sunshine Coast,32,9254,3085,0,3085,exits likely
+2024-07-01,Torres and Cape,25,796,33,237,-204,retention — patients trapped
+2024-07-01,Townsville,25,3220,134,0,134,exits likely
+2024-07-01,West Moreton,28,7908,1318,0,1318,exits likely
+2024-07-01,Wide Bay,18,14404,-3601,0,-3601,within target
+2024-10-01,Cairns and Hinterland,28,7930,1322,0,1322,exits likely
+2024-10-01,Central Queensland,23,8967,-374,0,-374,within target
+2024-10-01,Central West,17,1502,-438,3,-441,within target
+2024-10-01,Darling Downs,40,6050,4034,0,4034,exits likely
+2024-10-01,Gold Coast,30,8055,2014,0,2014,exits likely
+2024-10-01,Mackay,17,9868,-2878,0,-2878,within target
+2024-10-01,Metro North,125,3872,16296,0,16296,exits likely
+2024-10-01,Metro South,29,25716,5358,0,5358,exits likely
+2024-10-01,North West,70,153,293,0,293,exits likely
+2024-10-01,South West,11,2439,-1321,0,-1321,within target
+2024-10-01,Sunshine Coast,22,12393,-1033,0,-1033,within target
+2024-10-01,Torres and Cape,44,435,362,217,145,exits likely
+2024-10-01,Townsville,32,2593,864,0,864,exits likely
+2024-10-01,West Moreton,67,3594,6438,351,6087,exits likely
+2024-10-01,Wide Bay,45,6257,5475,0,5475,exits likely
+2025-01-01,Cairns and Hinterland,36,6399,3200,0,3200,exits likely
+2025-01-01,Central Queensland,18,11515,-2879,0,-2879,within target
+2025-01-01,Central West,20,1394,-232,2,-234,within target
+2025-01-01,Darling Downs,52,4775,5571,0,5571,exits likely
+2025-01-01,Gold Coast,32,7790,2597,0,2597,exits likely
+2025-01-01,Mackay,14,11153,-4647,0,-4647,within target
+2025-01-01,Metro North,79,6431,14738,0,14738,exits likely
+2025-01-01,Metro South,33,24029,9011,0,9011,exits likely
+2025-01-01,North West,25,472,20,0,20,exits likely
+2025-01-01,South West,9,3280,-2050,0,-2050,within target
+2025-01-01,Sunshine Coast,33,8516,3193,0,3193,exits likely
+2025-01-01,Torres and Cape,26,760,63,205,-142,retention — patients trapped
+2025-01-01,Townsville,23,3628,-151,0,-151,within target
+2025-01-01,West Moreton,97,2463,7490,376,7114,exits likely
+2025-01-01,Wide Bay,32,8727,2909,0,2909,exits likely
+2025-04-01,Cairns and Hinterland,34,7100,2958,0,2958,exits likely
+2025-04-01,Central Queensland,22,9308,-776,0,-776,within target
+2025-04-01,Central West,34,817,340,0,340,exits likely
+2025-04-01,Darling Downs,51,5017,5645,0,5645,exits likely
+2025-04-01,Gold Coast,20,11582,-1930,1,-1931,within target
+2025-04-01,Mackay,33,4924,1847,0,1847,exits likely
+2025-04-01,Metro North,33,16529,6198,0,6198,exits likely
+2025-04-01,Metro South,75,11705,24872,2,24870,exits likely
+2025-04-01,North West,32,458,153,1,152,exits likely
+2025-04-01,South West,15,2040,-765,0,-765,within target
+2025-04-01,Sunshine Coast,46,6315,5789,6,5783,exits likely
+2025-04-01,Torres and Cape,14,1245,-519,142,-661,within target
+2025-04-01,Townsville,37,2408,1304,0,1304,exits likely
+2025-04-01,West Moreton,75,3666,7790,901,6889,exits likely
+2025-04-01,Wide Bay,32,8770,2923,0,2923,exits likely

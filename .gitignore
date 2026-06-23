@@ -416,3 +416,29 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+#ignore specified files
+**/.DS_Store
+#ignore updated master
+data/processed/master_dataset_20260514.csv
+#ignore years
+data/raw/csv/2015-2019/
+data/raw/csv/2020-apr-oral-health.csv
+data/raw/csv/2020-dec-oral-health.csv
+data/raw/csv/2020-jan-oral-health.csv
+data/raw/csv/2020-june-oral-health.csv
+data/raw/csv/2020-may-oral-health.csv
+data/raw/csv/2025-december-quarter-oral-health.csv
+data/raw/csv/2025-september-quarter-oral-health.csv
+data/raw/xlsx/2015-2019/
+data/raw/xlsx/2025-december-quarter-oral-health.xlsx
+data/raw/xlsx/2025-september-quarter-oral-health.xlsx
+#ignore viz processes
+docs/clinic_capacity_beeswarm.html
+notebooks/viz_process.ipynb
+#ignored updated script
+scripts/ETL_01_merge_flatfiles.py
+#old notebook
+notebooks/stock_timeseries.ipynb
+#ignore audit
+sql/Queries/explain_analyse
