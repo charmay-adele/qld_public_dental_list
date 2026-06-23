@@ -42,11 +42,10 @@
 DROP TABLE IF EXISTS quarter_format;
 
         CREATE TEMPORARY TABLE quarter_format AS
-            WITH total_volume AS ( -- group patients by date, appointment, clinic, catchment, period
+            WITH total_volume AS ( -- sum of treated patients
                     SELECT
-                        q.date,
-                        q.patients_waiting, 
-                        q.patients_treated,
+                        DATE_TRUNC('quarter',q.date)::date AS quarter_start,
+                        ROUND(SUM(q.patients_treated),0) AS total_treated,
                         wp.period_id,
                         wp.is_desired,
                         wp.start_month,
@@ -61,35 +60,83 @@ DROP TABLE IF EXISTS quarter_format;
                                                     AND q.period_id = awp.period_id
                     JOIN wait_period wp ON awp.period_id = wp.period_id
                     JOIN clinic cl ON cl.clinic_id = q.clinic_id
-                    GROUP BY q.date, q.patients_waiting, 
-                        q.patients_treated, wp.period_id, wp.is_desired, 
+                    WHERE ap.visit_type = 'General'
+                    GROUP BY q.date, wp.period_id, wp.is_desired, 
                         wp.start_month, wp.end_month, ap.visit_type,
                         cl.clinic_id, cl.clinic_name, cl.catchment
-                    )
-                        /*
-                        truncate date to quarter, 
-                        average snapshot of patient activity & 
-                        sum the flow of treated patients to maintain data integrity. 
-                        */ 
-            SELECT -- group by quarter, catchment, clinic, period calculations, where visit type is general
-                DATE_TRUNC('quarter', date)::date AS quarter, 
-                clinic_name,
-                catchment,
-                period_id,
-                ROUND(AVG(patients_waiting), 0) AS total_waiting,
-                ROUND(SUM(patients_treated), 0) AS total_treated,
-                is_desired,
-                start_month,
-                end_month,
-                (start_month + end_month) / 2  AS avg_desired_wait,
-                (SELECT MAX(end_month) FROM total_volume WHERE is_desired = 'True') AS desired_wait
-                        -- this scalar subquery is used to calculated weight in the following CTE: period_weight
-                        -- only because we are looking at one type of visit - general.
-            FROM total_volume
-            WHERE visit_type = 'General'
-            GROUP BY quarter, catchment, clinic_name, period_id, is_desired, start_month, end_month;
-
-
+                    ),
+                snapshot_setup AS ( -- 3 monthly set up -- sum of waiting patients
+                -- PER PERIOD_ID
+                        SELECT
+                        q.date,
+                        ap.visit_type,
+                        q.clinic_id,
+                        clinic.clinic_name,
+                        clinic.catchment,
+                        q.period_id, wp.is_desired, wp.start_month, wp.end_month,
+                        SUM(patients_waiting) AS total_waiting   -- snapshot: sum across clinics on that date
+                        FROM queue q
+                        JOIN clinic      ON clinic.clinic_id     = q.clinic_id
+                        JOIN appointment ap ON ap.visit_id = q.visit_id
+                        JOIN appointment_waitperiod awp ON ap.visit_id = awp.visit_id
+                                                        AND q.period_id = awp.period_id
+                        JOIN wait_period wp ON awp.period_id = wp.period_id
+                        WHERE EXTRACT(MONTH FROM q.date) IN (3, 6, 9, 12)
+                        GROUP BY
+                        q.date,
+                        ap.visit_type,
+                        q.clinic_id,
+                        clinic.clinic_name,
+                        clinic.catchment,
+                        q.period_id, wp.is_desired, wp.start_month, wp.end_month
+                ),
+                third_month_snapshot AS ( -- date trunc snapshot_setup to seamless merge with treated patients
+                -- PER PERIOD_ID
+                        SELECT
+                        DATE_TRUNC('quarter', date)::date AS quarter_start,
+                        visit_type,
+                        clinic_id,
+                        clinic_name,
+                        catchment,
+                        period_id, is_desired, start_month, end_month, --period grains
+                        total_waiting
+                        FROM snapshot_setup
+                ),
+                desired_wait_by_type AS (
+                SELECT
+                        visit_type,
+                        MAX(end_month) AS desired_wait
+                FROM total_volume
+                WHERE is_desired = 'True'
+                GROUP BY visit_type
+                )
+            SELECT -- join treated and processed waiting patients - start backlog metric.
+                t.quarter_start AS quarter,
+                t.visit_type,
+                t.clinic_id,
+                t.clinic_name,
+                t.catchment,
+                t.period_id, t.is_desired, t.start_month, t.end_month, --period grains
+                SUM(t.total_treated) AS total_treated,
+                s.total_waiting,
+                (t.start_month + t.end_month) / 2  AS avg_desired_wait,
+                dw.desired_wait
+                FROM total_volume t
+                LEFT JOIN third_month_snapshot s
+                ON  s.quarter_start = t.quarter_start
+                AND s.clinic_id     = t.clinic_id
+                AND s.visit_type    = t.visit_type
+                AND s.period_id     = t.period_id
+                JOIN desired_wait_by_type dw ON dw.visit_type = t.visit_type
+            GROUP BY quarter, t.visit_type, t.catchment, t.clinic_id, t.clinic_name, s.total_waiting, t.period_id, t.is_desired, t.start_month, t.end_month, dw.desired_wait;
+/* query optimisation: EXPLAIN ANALYSE
+moving WHERE visit_type = 'General' from the last selection to the first two selections improves query speeds 1000x 
+Execution time has moved from from 182,000ms to 168ms
+previous query: -- Storage: Disk  Maximum Storage: 5276kB
+                -- temp read=44184614 written=2646
+updated query:  -- Storage: Memory  Maximum Storage: 1465kB
+The updated query has not overflowed into disk drive like the previous.
+*/
 /*-- ___________________________________________________________________________
 
         Level 1: Design Weight
@@ -103,11 +150,11 @@ DROP TABLE IF EXISTS quarter_format;
 WITH weight_design AS ( -- longer the period, the greater the weight
         SELECT
                 quarter,
-                clinic_name,
                 catchment,
+                clinic_name,
                 period_id,
                 total_waiting,
-        CASE WHEN is_desired = TRUE THEN 0 -- no pressure
+        CASE WHEN is_desired = 'True' THEN 0 -- no pressure
                 ELSE ROUND(GREATEST(
                     0, 
                     (((start_month + end_month) / 2.0 - desired_wait) -- patient average wait - appointment desired wait
@@ -128,8 +175,8 @@ WITH weight_design AS ( -- longer the period, the greater the weight
 add_weight AS (
         SELECT
         q.quarter,
-        q.clinic_name,
         q.catchment,
+        q.clinic_name,
         q.period_id,
         q.total_waiting,
         CASE WHEN w.excess_wait > 1 
@@ -181,11 +228,26 @@ clinic_totals AS (
 SELECT
         quarter,
         catchment,
-        clinic_name,
         total_waiting,
         total_waiting_adjusted,
         backlog,
-        CASE WHEN total_waiting_adjusted = 0 THEN 0 
-        ELSE backlog/total_waiting_adjusted END AS excess_proportion -- lets find the proportion of backlog to total_adjusted
- FROM clinic_totals
- ORDER BY quarter, catchment, clinic_name
+        ROUND((backlog/total_waiting_adjusted)*100, 2) AS proportional_backlog
+ FROM catchment_totals
+ ORDER BY quarter, catchment
+
+-- needs to have heatmap proportionate to total_waiting_adjusted. 
+-- how much of total waiting_adjusted is backlog? and compare the flood of pressure
+
+-- CLINIC BACKLOG
+-- SELECT
+--         quarter,
+--         catchment,
+--         clinic_name,
+--         total_waiting,
+--         total_waiting_adjusted,
+--         backlog,
+--         CASE WHEN total_waiting_adjusted = 0 THEN 0 
+--         ELSE ROUND(backlog/total_waiting_adjusted, 4)*100 
+--         END AS proportional_backlog
+--  FROM clinic_totals
+--  ORDER BY quarter, catchment

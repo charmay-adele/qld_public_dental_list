@@ -1,35 +1,13 @@
+
 /*-- ___________________________________________________________________________
 
-        Level 0: Review Unique Months & Quarters
-                            
-*/--
--- SELECT
---     date, 
---     SUM(patients_waiting) AS patients_waiting, 
---     SUM(patients_treated) AS patients_treated
--- FROM queue
--- GROUP BY date
--- ORDER BY date;
-                                                                                                                        /*
-
-(2020-02-29, 2020-03-31) (2020-07-31, 2020-08-31, 2020-09-30) (2020-10-31, 2020-11-30) missing Q2,      partial: Q1, Q4
-(2021-01-31, 2021-02-28, 2021-03-31), (2021-04-30, 2021-05-31, 2021-06-30),            missing Q3, Q4
-(2022-07-31, 2022-08-31, 2022-09-30), (2022-10-31, 2022-11-30, 2022-12-31),            missing Q1, Q2
-(2023-04-30, 2023-05-31, 2023-06-30), (2023-09-30), (2023-12-31),                      missing Q1,      quarterly: 3,4
-(2024-03-31), (2024-06-30), (2024-09-30), (2024-12-31),                                                 quarterly: 1,2,3,4
-(2025-03-31), (2025-06-30)                                                                              quarterly: 1,2
-
-
-                                                                                                                        */
-/*-- ___________________________________________________________________________
-
-        Level : Set Up
+        Level 0: Set Up
                             + transform timeseries from months to quarters
                             + consistancy aggregating waiting and treated patients
                             + waiting patients every 3rd month (quarterly snapshot)
                             + treated patients sum of 3 months
 */--
-    
+
 DROP TABLE IF EXISTS quarterly_format;
 
 CREATE TEMPORARY TABLE quarterly_format AS
@@ -81,37 +59,26 @@ CREATE TEMPORARY TABLE quarterly_format AS
         FROM snapshot_setup
     )
 SELECT -- join total waiting to total volume via quarter_start
-    t.quarter_start,
+    t.quarter_start AS quarter,
     t.visit_type,
     t.clinic_id,
     t.clinic_name,
     t.catchment,
-    t.total_treated AS treated,
-    s.total_waiting AS waiting
+    t.total_treated,
+    s.total_waiting
 FROM total_volume t
 JOIN third_month_snapshot s
     ON  s.quarter_start = t.quarter_start
     AND s.clinic_id     = t.clinic_id
     AND s.visit_type    = t.visit_type;
 
-/*-- ___________________________________________________________________________
-
-        Final Query: quarterly sums of patients waiting and treated within dental system
-                            
-*/-- 
+/*-- ___________________________________________________________________________--*/
 
 SELECT
-    dim.quarter_start,
-    SUM(waiting) AS waiting,
-    SUM(treated) AS treated
-FROM (
-    SELECT DISTINCT DATE_TRUNC('quarter', date) AS quarter_start
-    FROM dim_date
-) dim
-LEFT JOIN quarterly_format 
-    ON dim.quarter_start = quarterly_format.quarter_start
-    -- AND visit_type = 'General'
-    -- -- running " visit_type = 'General' "in JOIN because if used 
-    -- -- in WHERE it will drop NULL results that are needed in viz
-GROUP BY dim.quarter_start
-ORDER BY dim.quarter_start;
+    catchment,
+    ROUND(SUM(total_waiting) / SUM(SUM(total_waiting)) OVER () * 100, 2) AS pct_of_qld_waitlist
+FROM quarterly_format
+WHERE visit_type = 'General'
+AND quarter >= '2023-07-01'
+GROUP BY catchment
+ORDER BY pct_of_qld_waitlist DESC;
